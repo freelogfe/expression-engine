@@ -1,61 +1,39 @@
 'use strict'
 
-const antlr4 = require('antlr4/index');
+const antlr4 = require('antlr4/index')
+const ExpressionVisitor = require('./lib/expressionVisitor')
+const ExpressionLexer = require('./antlr4-gen/expressionDefinitionLexer')
+const ExpressionParser = require('./antlr4-gen/expressionDefinitionParser')
 
-// const HelloLexer = require('../gen/HelloLexer')
-// const HelloParser = require('../gen/HelloParser')
-// const MyHelloVisitor = require('./MyHelloVisitor')
+module.exports = {
 
-const ExpressionLexer = require('../gen/expressionDefinitionLexer')
-const ExpressionParser = require('../gen/expressionDefinitionParser')
-const MyExpressionVisitor = require('./MyExpressionVisitor')
+    /**
+     * 主入口
+     * @param input
+     */
+    main(input, variableMap) {
 
+        const chars = new antlr4.InputStream(input);
+        const lexer = new ExpressionLexer.expressionDefinitionLexer(chars);
+        const tokens = new antlr4.CommonTokenStream(lexer);
+        const parser = new ExpressionParser.expressionDefinitionParser(tokens);
+        parser.buildParseTrees = true;
 
-function testHello() {
+        const tree = parser.prog()
+        const myExpressionVisitor = new ExpressionVisitor()
 
-    var input = '(1+1+2+3*3)+(1+1+2+3*3)\
-    +(3-3)+10/2+a\n'
+        if (variableMap) {
+            for (let [key, value] of variableMap.entries()) {
+                myExpressionVisitor.setVariable(key, value)
+            }
+        }
 
-    var chars = new antlr4.InputStream(input);
-    var lexer = new HelloLexer.HelloLexer(chars);
-    var tokens = new antlr4.CommonTokenStream(lexer);
-    var parser = new HelloParser.HelloParser(tokens);
-    parser.buildParseTrees = true;
+        myExpressionVisitor.visit(tree)
 
-    var tree = parser.prog()
-    var myVisitor = new MyHelloVisitor()
-
-    myVisitor.visit(tree)
-
-    console.log(`${input}的计算结果是:${myVisitor.value}`.replace('\n', ''))
-}
-
-function testExpression() {
-
-    var input = '$sum(1+2,3+4)^2*pi*1'
-
-    var chars = new antlr4.InputStream(input);
-    var lexer = new ExpressionLexer.expressionDefinitionLexer(chars);
-    var tokens = new antlr4.CommonTokenStream(lexer);
-    var parser = new ExpressionParser.expressionDefinitionParser(tokens);
-    parser.buildParseTrees = true;
-
-    var tree = parser.prog()
-    var myExpressionVisitor = new MyExpressionVisitor()
-
-    myExpressionVisitor.setVariable('a1', 12)
-    myExpressionVisitor.setVariable('a3', 29)
-
-    myExpressionVisitor.visit(tree)
-
-    console.log(`${input}计算结果:${myExpressionVisitor.result}`)
-
-    if (myExpressionVisitor.errorMsg) {
-        console.error(myExpressionVisitor.errorMsg)
+        return myExpressionVisitor
     }
 }
 
-testExpression()
 
 //antlr4 Hello.g4
 //javac Hello*.java
