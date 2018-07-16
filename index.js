@@ -33,11 +33,3 @@ module.exports = {
         return myExpressionVisitor
     }
 }
-
-
-//antlr4 Hello.g4
-//javac Hello*.java
-//grun Hello prog -gui < test/test.policy
-
-//直接生成JS文件
-//antlr4 -Dlanguage=JavaScript Hello.g4 -no-listener -visitor -o gen
