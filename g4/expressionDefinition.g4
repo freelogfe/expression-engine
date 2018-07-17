@@ -48,9 +48,7 @@ constant
   | EULER
   ;
 
-
 variable : VARIABLE ;
-
 
 LPAREN : '(' ;
 RPAREN : ')' ;
@@ -65,20 +63,18 @@ COMMA : ',' ;
 POINT : '.' ;
 POW : '^' ;
 PI : 'pi' ;
+EULER : 'e' ;
 INT : [0-9]+ ;
 NEWLINE:'\r'? '\n' ;
 SUM : [Ss][Uu][Mm] ;
-AVG : [Aa][Vv][Gg] ; //内置函数需要在变量之前,否则解析会有限解析VARIABLE
+AVG : [Aa][Vv][Gg] ;
+//VARIABLE正则覆盖范围较广,需要尽量靠后,否则会优先满足,会导致其他正则规则无法匹配到
 VARIABLE: [a-zA-Z]+[a-zA-Z0-9_]* ;
 
 
 SCIENTIFIC_NUMBER
    : NUMBER (('E' | 'e') SIGN? NUMBER)?
    ;
-
-
-EULER : 'e' ;
-
 
 fragment NUMBER
    : ('0' .. '9') + ('.' ('0' .. '9') +)?
