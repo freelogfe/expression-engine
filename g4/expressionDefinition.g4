@@ -29,11 +29,7 @@ built_in_function
   :  funcname LPAREN expression (COMMA expression)* RPAREN
   ;
 
-funcname
-  : SUM
-  | AVG
-  ;
-
+funcname : SUM? | AVG? ;
 
 atom
   : scientific
@@ -51,6 +47,7 @@ constant
   : PI
   | EULER
   ;
+
 
 variable : VARIABLE ;
 
@@ -70,9 +67,9 @@ POW : '^' ;
 PI : 'pi' ;
 INT : [0-9]+ ;
 NEWLINE:'\r'? '\n' ;
-
-VARIABLE: [a-zA-Z]+[a-zA-Z0-9_]*;
-
+SUM : [Ss][Uu][Mm] ;
+AVG : [Aa][Vv][Gg] ; //内置函数需要在变量之前,否则解析会有限解析VARIABLE
+VARIABLE: [a-zA-Z]+[a-zA-Z0-9_]* ;
 
 
 SCIENTIFIC_NUMBER
@@ -81,8 +78,6 @@ SCIENTIFIC_NUMBER
 
 
 EULER : 'e' ;
-SUM : '$sum' ;
-AVG : '$avg' ;
 
 
 fragment NUMBER
@@ -92,3 +87,4 @@ fragment NUMBER
 fragment SIGN
    : ('+' | '-')
    ;
+
