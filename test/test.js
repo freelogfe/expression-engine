@@ -1,14 +1,18 @@
-'use strict'
+"use strict"
 
+const path = require('path');
+const fs = require("fs");
 const antlr4 = require("antlr4");
-const gen_dir = "./gen";
+const gen_dir = "../gen";
 const ExpressionDefinitionLexer = require(`${gen_dir}/ExpressionDefinitionLexer`).ExpressionDefinitionLexer;
 const ExpressionDefinitionParser = require(`${gen_dir}/ExpressionDefinitionParser`).ExpressionDefinitionParser;
-const ExpressionDefinitionCustomListener = require("./ExpressionDefinitionCustomListener").ExpressionDefinitionCustomListener;
+const ExpressionDefinitionCustomListener = require("../ExpressionDefinitionCustomListener").ExpressionDefinitionCustomListener;
 
-exports.compute =function (content) {
+main();
 
-    let chars = new antlr4.InputStream(content);
+function main() {
+    let input = fs.readFileSync("./resources/zhaojn.sc", "utf-8");
+    let chars = new antlr4.InputStream(input);
 
     let lexer = new ExpressionDefinitionLexer(chars);
     let stream = new antlr4.CommonTokenStream(lexer);
@@ -19,4 +23,6 @@ exports.compute =function (content) {
     parser._errHandler = new antlr4.error.BailErrorStrategy();
 
     let tree = parser.prog();
+
+    console.log(listener.expressions);
 }

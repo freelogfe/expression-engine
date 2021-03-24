@@ -2,7 +2,8 @@
   "name": "expression-engine",
   "version": "0.0.1",
   "dependencies": {
-    "antlr4": "^4.7.1"
+    "antlr4": "4.8.0",
+    "decimal.js": "^10.2.1"
   },
   "author": "yu.liang@freelog.com",
   "license": "MIT"
